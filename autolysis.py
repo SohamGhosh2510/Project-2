@@ -35,7 +35,7 @@ import requests
 
 # Set up AI Proxy
 AI_PROXY_URL = "http://aiproxy.sanand.workers.dev/openai/v1/chat/completions"
-AIPROXY_TOKEN = os.getenv("AIPROXY_TOKEN")
+AIPROXY_TOKEN = os.environ["AIPROXY_TOKEN"]
 
 if not AIPROXY_TOKEN:
     raise EnvironmentError("AIPROXY_TOKEN environment variable not set.")
