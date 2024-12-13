@@ -62,32 +62,6 @@ def send_to_ai_proxy(summary_stats, columns_info, corr):
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"]
 
-def save_to_subdirectory(csv_filename, content, images=[]):
-    """
-    Save the README.md file and images into a subdirectory named after the CSV file.
-
-    Args:
-        csv_filename (str): The name of the CSV file.
-        content (str): The content to write into README.md.
-        images (list): List of image file paths to copy to the subdirectory.
-    """
-    # Get or Create subdirectory name based on CSV file
-    subdir_name = os.path.splitext(csv_filename)[0]
-    if not os.path.exists(subdir_name):
-        os.makedirs(subdir_name)
-
-    # Save README.md in the subdirectory
-    readme_path = os.path.join(subdir_name, "README.md")
-    with open(readme_path, "w") as f:
-        f.write(content)
-
-    # Move images to the subdirectory
-    for image in images:
-        new_path = os.path.join(subdir_name, os.path.basename(image))
-        os.rename(image, new_path)
-
-    print(f"Files saved to {subdir_name}.")
-
 def analyze_csv(file_path):
     # Read CSV
     data = pd.read_csv(file_path, encoding='utf-8', encoding_errors='replace')
@@ -112,11 +86,8 @@ def analyze_csv(file_path):
 
     # Send summary to AI Proxy
     analysis_story = send_to_ai_proxy(summary_stats, columns_info, corr)
-
-    
-    # Save results in the appropriate directory
-    save_to_subdirectory(file_path, analysis_story, images=[correlation_file])
-
+    with open('README.md', 'w') as f:
+        f.write(analysis_story)
 
     print("Analysis completed and saved to README.md.")
 
